@@ -81,6 +81,12 @@ grant all privileges on rangerkms.* to rangerkms@'%.gce.cloudera.com' identified
 create database oozie;
 grant all privileges on oozie.* to 'oozie'@'localhost' identified by 'cloudera123';
 grant all privileges on oozie.* to 'oozie'@'%.gce.cloudera.com' identified by 'cloudera123';
+create database superset DEFAULT CHARACTER SET utf8;;
+grant all privileges on superset.* to 'superset'@'localhost' identified by 'cloudera123';
+grant all privileges on superset.* to 'superset'@'%.gce.cloudera.com' identified by 'cloudera123';
+create database druid DEFAULT CHARACTER SET utf8;;
+grant all privileges on druid.* to 'druid'@'localhost' identified by 'cloudera123';
+grant all privileges on druid.* to 'druid'@'%.gce.cloudera.com' identified by 'cloudera123';
 ```
 
 Create Database for SAM and Schema Registry
@@ -190,6 +196,26 @@ Disable SELinux
 setenforce 0
 ```
 
+## Install HDF mpack
+Reference
+- https://docs.hortonworks.com/HDPDocuments/HDF3/HDF-3.4.0/installing-hdf/content/installing_the_hdf_management_pack_on_an_hdf_cluster.html
+Get the mpack
+```
+wget http://public-repo-1.hortonworks.com/HDF/centos7/3.x/updates/3.4.0.0/tars/hdf_ambari_mp/hdf-ambari-mpack-3.4.0.0-155.tar.gz
+ambari-server install-mpack \
+--mpack=hdf-ambari-mpack-3.4.0.0-155.tar.gz \
+--purge \
+--verbose
+```
+
+Restart ambari
+```
+ambari-server restart
+```
+
+## Install HDF Cluster
+Reference
+- https://docs.hortonworks.com/HDPDocuments/HDF3/HDF-3.4.0/installing-hdf/content/install_an_hdf_cluster_using_ambari.html
 
 
 
