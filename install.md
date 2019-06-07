@@ -4,9 +4,18 @@
 Reference
 - https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/set_up_password-less_ssh.html
 
+Generate public key and private key
+```
+ssh-keygen
+```
+
 ## Enable NTPD
 Reference
 - https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/enable_ntp_on_the_cluster_and_on_the_browser_host.html
+```
+yum install -y ntp
+systemctl enable ntpd
+```
 
 # Check DNS or edit /etc/hosts
 Reference
@@ -15,10 +24,17 @@ Reference
 ## Configure IPTABLES
 Reference
 - https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/configuring_iptables.html
+```
+systemctl disable firewalld
+service firewalld stop
+```
 
 ## Disable SELinux
 Reference
 - https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/disable_selinux_and_packagekit_and_check_the_umask_value.html
+```
+setenforce 0
+```
 
 ## Install MySQL
 Reference
@@ -97,9 +113,12 @@ Download JDBC Connector
 ```
 wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.45.tar.gz
 tar xzvf mysql-connector-java-5.1.45.tar.gz
+
+mkdir /usr/share/java
+cp mysql-connector-java-5.1.45/mysql-connector-java-5.1.45-bin.jar /usr/share/java/mysql-connector-java.jar
 ```
 
-Move the connector
+Copy the connector
 ```
 ambari-server setup --jdbc-db=mysql --jdbc-driver=/path/to/mysql/mysql-connector-java.jar
 ```
@@ -127,5 +146,24 @@ ambari-server setup
 ```
 Reference
 - https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/set_up_the_ambari_server.html
+
+Start the ambari server
+```
+ambari-server start
+```
+
+# Setup hosts for Kafka and NiFi
+
+Copy public key from ambari server to the target hosts
+```
+scp .ssh/id_rsa.pub root@bcx-kafka01.gce.cloudera.com:/root/.ssh
+```
+
+Login to the target host and add the SSH public key to the authorized_keys
+```
+cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+chmod 700 .ssh
+chmod 600 .ssh/authorized_keys
+```
 
 
