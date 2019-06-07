@@ -17,7 +17,7 @@ yum install -y ntp
 systemctl enable ntpd
 ```
 
-# Check DNS or edit /etc/hosts
+## Check DNS or edit /etc/hosts
 Reference
 - https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/check_dns.html
 
@@ -154,6 +154,8 @@ ambari-server start
 
 # Setup hosts for Kafka and NiFi
 
+## Prepare passwordless SSH
+
 Copy public key from ambari server to the target hosts
 ```
 scp .ssh/id_rsa.pub root@bcx-kafka01.gce.cloudera.com:/root/.ssh
@@ -165,5 +167,29 @@ cat .ssh/id_rsa.pub >> .ssh/authorized_keys
 chmod 700 .ssh
 chmod 600 .ssh/authorized_keys
 ```
+
+## Setup Prerequisite
+
+Enable NTPD
+```
+yum install -y ntp
+systemctl enable ntpd
+```
+Check DNS or edit /etc/hosts
+Reference
+- https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/check_dns.html
+
+onfigure IPTABLES
+```
+systemctl disable firewalld
+service firewalld stop
+```
+
+Disable SELinux
+```
+setenforce 0
+```
+
+
 
 
