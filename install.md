@@ -40,11 +40,11 @@ Create Database and Schema for Ambari
 ```
 mysql -u root
 
-CREATE USER 'ambari'@'%' IDENTIFIED BY 'cloudera123!';
+CREATE USER 'ambari'@'%' IDENTIFIED BY 'cloudera123';
 GRANT ALL PRIVILEGES ON *.* TO 'ambari'@'%';
-CREATE USER 'ambari'@'localhost' IDENTIFIED BY 'cloudera123!';
+CREATE USER 'ambari'@'localhost' IDENTIFIED BY 'cloudera123';
 GRANT ALL PRIVILEGES ON *.* TO 'ambari'@'localhost';
-CREATE USER 'ambari'@'bcx-ambari.gce.cloudera.com' IDENTIFIED BY 'cloudera123!';
+CREATE USER 'ambari'@'bcx-ambari.gce.cloudera.com' IDENTIFIED BY 'cloudera123';
 GRANT ALL PRIVILEGES ON *.* TO 'ambari'@'bcx-ambari.gce.cloudera.com';
 FLUSH PRIVILEGES;
 ```
@@ -54,17 +54,17 @@ Create Database for other services
 mysql -u root
 
 create database hive;
-grant all privileges on hive.* to 'hive'@'localhost' identified by 'cloudera123!';
-grant all privileges on hive.* to 'hive'@'%.gce.cloudera.com' identified by 'cloudera123!';
+grant all privileges on hive.* to 'hive'@'localhost' identified by 'cloudera123';
+grant all privileges on hive.* to 'hive'@'%.gce.cloudera.com' identified by 'cloudera123';
 create database ranger;
-grant all privileges on ranger.* to 'ranger'@'localhost' identified by 'cloudera123!';
-grant all privileges on ranger.* to 'ranger'@'%.gce.cloudera.com' identified by 'cloudera123!';
+grant all privileges on ranger.* to 'ranger'@'localhost' identified by 'cloudera123';
+grant all privileges on ranger.* to 'ranger'@'%.gce.cloudera.com' identified by 'cloudera123';
 create database rangerkms;
-grant all privileges on rangerkms.* to rangerkms@'localhost' identified by 'cloudera123!';
-grant all privileges on rangerkms.* to rangerkms@'%.gce.cloudera.com' identified by 'cloudera123!';
+grant all privileges on rangerkms.* to rangerkms@'localhost' identified by 'cloudera123';
+grant all privileges on rangerkms.* to rangerkms@'%.gce.cloudera.com' identified by 'cloudera123';
 create database oozie;
-grant all privileges on oozie.* to 'oozie'@'localhost' identified by 'cloudera123!';
-grant all privileges on oozie.* to 'oozie'@'%.gce.cloudera.com' identified by 'cloudera123!';
+grant all privileges on oozie.* to 'oozie'@'localhost' identified by 'cloudera123';
+grant all privileges on oozie.* to 'oozie'@'%.gce.cloudera.com' identified by 'cloudera123';
 ```
 
 Create Database for SAM and Schema Registry
@@ -74,8 +74,8 @@ mysql -u root -p
 create database registry;
 create database streamline;
 
-CREATE USER 'registry'@'%' IDENTIFIED BY 'cloudera123!';
-CREATE USER 'streamline'@'%' IDENTIFIED BY 'cloudera123!';
+CREATE USER 'registry'@'%' IDENTIFIED BY 'cloudera123';
+CREATE USER 'streamline'@'%' IDENTIFIED BY 'cloudera123';
 
 GRANT ALL PRIVILEGES ON registry.* TO 'registry'@'%' WITH GRANT OPTION ;
 GRANT ALL PRIVILEGES ON streamline.* TO 'streamline'@'%' WITH GRANT OPTION ;
@@ -115,7 +115,7 @@ cd /var/lib/ambari-server/resources/
 mysql -u ambari -p
 CREATE DATABASE ambari;
 USE ambari;
-SOURCE /var/lib/ambari-server/resources/
+SOURCE Ambari-DDL-MySQL-CREATE.sql;
 ```
 
 Reference
