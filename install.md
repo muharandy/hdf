@@ -231,6 +231,8 @@ systemctl start slapd
 systemctl enable slapd
 ```
 
+## Configure Base Directory
+
 Generate password
 ```
 slappasswd
@@ -298,6 +300,8 @@ Build the directory structure
 ```
 ldapadd -x -W -D "cn=ldapadm,dc=gce,dc=cloudera,dc=com" -f base.ldif
 ```
+
+## Add User and Group
 
 Add user by creating user.ldif
 ```
