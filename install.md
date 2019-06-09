@@ -359,6 +359,151 @@ Add using ldapmodify
 ldapmodify -x -W -D "cn=ldapadm,dc=gce,dc=cloudera,dc=com" -f addtogroup.ldif
 ```
 
+# Dataplane Platform Installation
+
+Reference
+- https://docs.hortonworks.com/HDPDocuments/DP/DP-1.2.2/installation/content/dp_prepare_your_clusters.html
+
+## Setup LDAP Authentication for Ambari
+Reference
+- https://docs.hortonworks.com/HDPDocuments/HDP3/HDP-3.0.0/ambari-authentication-ldap-ad/content/authe_ldapad_configuring_ambari_for_ldap_or_active_directory_authentication.html
+
+On ambari server host, run the setup command
+```
+ambari-server setup-ldap
+```
+
+Restart ambari
+```
+ambari-server restart
+```
+
+Sync users from ldap
+```
+ambari-server sync-ldap --all
+```
+
+Check if user sync is success
+- Logon using the ldap user
+- Logon using ambari admin user then go to "Manage Ambari" from the top right corner, then open "Users" on the left side menu
+
+## Setup Knox SSO Overview
+
+Reference
+- https://docs.hortonworks.com/HDPDocuments/HDP3/HDP-3.0.0/configuring-knox-sso/content/knox_sso.html
+- https://developer.ibm.com/hadoop/2016/08/03/ldap-integration-with-apache-knox/
+- https://www.ibm.com/support/knowledgecenter/en/SSPT3X_4.2.5/com.ibm.swg.im.infosphere.biginsights.admin.doc/doc/admin_sso_knox.html
+- https://docs.hortonworks.com/HDPDocuments/HDP3/HDP-3.0.0/configuring-knox-sso/content/sec_configuring_ldapad_identity_provider_idp.html
+
+To set up Knox SSO with LDAP/AD, complete the following workflow:
+1. Install Knox.
+2. Configure Ambari Authentication for LDAP/AD.
+3. Configure an LDAP/AD Identity Provider (IdP).
+4. Enable Knox SSO using the Ambari CLI.
+5. Configure Knox SSO for HDFS, Oozie, MapReduce2, Zeppelin, or YARN.
+6. Restart all services that require a restart via Ambari.
+
+## Edit Knox SSO Topology File
+
+To edit knox sso topology file
+1. Login to ambari as admin
+2. Open Knox service page
+3. Go to Configs tab
+4. Open "Advanced knoxsso-topology"
+
+The following parameters must be updated to match your environment:
+- main.ldapRealm.userDnTemplate
+- main.ldapRealm.contextFactory.url
+- knoxsso.redirect.whitelist.regex
+
+Save and restart knox
+
+## Ambari SSO Setup
+Reference
+- https://docs.hortonworks.com/HDPDocuments/HDP3/HDP-3.0.0/configuring-knox-sso/content/sso_set_up_knox_sso.html
+- https://community.hortonworks.com/articles/114601/how-to-configure-and-troubleshoot-a-knox-topology.html
+
+Get the public certificate PEM
+```
+cd /usr/hdf/current/knox-server/bin
+./knoxcli.sh export-cert --type PEM
+cat /usr/hdf/3.4.1.1-4/knox/data/security/keystores/gateway-identity.pem
+```
+
+Go to Ambari host, run the following command
+```
+ambari-server setup-sso
+```
+
+Restart ambari when finished
+```
+ambari-server restart
+```
+
+Try logging in to Ambari, it will redirecto to Knox SSO page.
+
+## Setup Docker
+Reference
+- https://docs.hortonworks.com/HDPDocuments/DP/DP-1.2.2/installation/content/dp_installation_prerequisites.html
+
+Disable SE Linux
+```
+setenforce 0
+sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux
+```
+
+Install required packages
+```
+yum install yum-utils device-mapper-persistent-data lvm2
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+yum install -y http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.95-2.el7_6.noarch.rpm
+yum install docker-ce
+systemctl start docker
+```
+
+## Setup DP-Core
+Add Public Repo URL
+```
+cd /etc/yum.repos.d
+wget xxx
+```
+
+Install dpcore
+```
+yum install dp-core
+```
+
+Initialize DP
+Reference
+- https://docs.hortonworks.com/HDPDocuments/DP/DP-1.2.2/installation/content/dp_initialize.html
+
+Run system check
+```
+cd /usr/dp/current/core/bin
+./dpdeploy.sh system-check
+```
+GCE somehow use port 80, so modify the APP port in config.env.sh. Change to something else like 8080
+
+Initialize DP
+```
+./dpdeploy.sh init --all
+```
+
+## Initialize LDAP integration
+1. Access DP web through browser https://<dp address>, login using admin account
+2. Configure LDAP
+3. Login again using LDAP user
+
+## Configure Knox SSO for DP
+Reference
+- https://docs.hortonworks.com/HDPDocuments/DP/DP-1.2.2/installation/content/dp_configure_sso_with_hdp_clusters.html
+
+
+
+
+
+
+
 
 
 
