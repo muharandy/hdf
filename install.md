@@ -498,6 +498,219 @@ Initialize DP
 Reference
 - https://docs.hortonworks.com/HDPDocuments/DP/DP-1.2.2/installation/content/dp_configure_sso_with_hdp_clusters.html
 
+Logon to DP host
+```
+cd /usr/dp/current/core/bin/certs/
+cat ssl-cert.pem
+```
+
+Logon to knox host. Create token.xml
+```
+vi /etc/knox/conf/topologies/token.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<topology>
+   <uri>https://$KNOX_HOSTNAME_FQDN:8443/gateway/token</uri>
+   <name>token</name>
+   <gateway>
+      <provider>
+         <role>federation</role>
+         <name>SSOCookieProvider</name>
+         <enabled>true</enabled>
+         <param>
+            <name>sso.authentication.provider.url</name>
+            <value>https://bcx-1.gce.cloudera.com:8443/gateway/knoxsso/api/v1/websso</value>
+         </param>
+         <param>
+            <name>sso.token.verification.pem</name>
+            <value>
+                MIIE/jCCAuagAwIBAgIJALyFZxWX+DJVMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV
+BAMMCWRhdGFwbGFuZTAeFw0xOTA2MDgwOTAzNTZaFw0yMDA2MDcwOTAzNTZaMBQx
+EjAQBgNVBAMMCWRhdGFwbGFuZTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoC
+ggIBAMNm/eJbMlyOBT68iQsa3XWaqqscNORABPJDq8/d3vbUwawmtFNIRbCT9zuy
+8mkwo/UAqaULVomuuG+Bx5dgATX049VenZ5CWtpljRyFSpG4WLa+ZuhW8hcaq1Ji
+qfhFNpYGd+RQWSHN/MyLh8VtRiw3qJsE4NaWkec9tv+dNbnY5zhCtsMPorw465T1
+prS0mKipjL7boe+t9QGgykuLCMjPLH7KxYydWjokNBG63TEyO5L/xnZ+M2PiAzRB
++lP0gQijmiu7+apldgCsvHxuBMkLJagagGY/QY/mj7Votd6QnRmq9zfeP+PZyz+8
+LyDXUEFBGbKEpvBJK9fmiimOUeDuAXacmqJmP10+SAoSNfeaOcBxtFa4e6QMKFu5
+yleO12jXmmsAc0e/HOsEkkyGXDeK5hMZzqXxwyfKE9rPE0twQ+ICqhFbUj2m8Tww
+BukgFUzCF/oBLPxVxLYPOOd+3+QBaCpoOwfuEDTJszLzWiRvWSYDtjqfXTUEfTVR
+xs15WBNpp+iuPRiCZRWhTwXXG7yY7ghsJ3ohZCzR8mRshvTzFkNKkEK2pVQ/D2+U
+h9iADR26Jq/x88YD5uZNh0JMrvw7aBSogmOi3KxPsvG4a/b5p8iByDnYSq2/YXc+
+8TFXSxURmAyewZoXXr0W3CG5XRU2Lat2rJjWgHeFzAnSBbPdAgMBAAGjUzBRMB0G
+A1UdDgQWBBSTgCVGHXnI212RjRFA/Pc46MizNjAfBgNVHSMEGDAWgBSTgCVGHXnI
+212RjRFA/Pc46MizNjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IC
+AQBUHVi+OJ8wG63Q3si1E3eOOgflB8vByAWapz2gkraij17NUmp4+I2VKAUU5j+D
+6b/luxqFTheLe86o4F/xgld7OpFe8Bd8sMImudx0cgraCDn12eVegq1OcgcIsq/G
+dmd2odSFWTMgUfQ83L8ydERh3rPVH2sifP52KfF5HVN0158bEm+62WuM+SkzMnV8
+33gMlnKUAjmXIl+snPhegLDovsOSactdEvovIT8zHToX2W766OM8t+JDLqIsakmR
+lD2iv+CdnHldTfFkORndclv47EfNr8eyrr+UOiR2h5NPprLB1lO3E2L5BZxakg7X
+MNdlTIWzqJJZQNn1+GN6jQb/DQ4uXACiG+lC87asEU0r0Mdsc78xSB7Ac17axOBY
+8jOoAs59qLXz/rRVBKfp/PIXqQtFV75MBSbBrcBMh5S7oc6dvzSnuOU4FOWa1Kok
+zemWynDfigz3K9hSe8iQirMA9VluEKl5FH+LQ22p04V2joQ8t2SN+TA8lJ5ckQEA
+9ZUIEqYGUkfW/cHX7Fi4cabPknAhFwgfN+gxAIX/AZNxREbddrrw1oNguJhUpEFW
+b/JrhYGdu13TGBL1dQarQKBSFCRERMpDbqpAWHqNT4X9ZHIbupMxviztTGDIyFTv
+cPgmUODdZ1pLCFW9fX8aLP9yDSQOSsOfxi2ytp+5v/KVVA==
+            </value>
+         </param>
+      </provider>
+      <provider>
+         <role>identity-assertion</role>
+         <name>HadoopGroupProvider</name>
+         <enabled>true</enabled>
+      </provider>
+      
+   </gateway>
+
+   <service>
+      <role>KNOXTOKEN</role>
+      <param>
+         <name>knox.token.ttl</name>
+         <value>100000</value>
+      </param>
+      <param>
+         <name>knox.token.client.data</name>
+         <value>cookie.name=hadoop-jwt</value>
+      </param>
+      <param>
+         <name>main.ldapRealm.authorizationEnabled</name>
+         <value>false</value>
+      </param>
+   </service>
+</topology>
+```
+
+Create redirect.xml
+```
+vi /etc/knox/conf/topologies/redirect.xml
+
+<topology>
+    <name>tokensso</name>
+    <gateway>
+        <provider>
+            <role>federation</role>
+            <name>JWTProvider</name>
+            <enabled>true</enabled>
+        </provider>
+        <provider>
+            <role>identity-assertion</role>
+            <name>Default</name>
+            <enabled>true</enabled>
+        </provider>
+    </gateway>
+    <service>
+        <role>KNOXSSO</role>
+        <param>
+            <name>knoxsso.cookie.secure.only</name>
+            <value>true</value>
+        </param>
+        <param>
+            <name>knoxsso.token.ttl</name>
+            <value>600000</value>
+        </param>
+        <param>
+            <name>knoxsso.redirect.whitelist.regex</name>
+            <value>.*</value>
+        </param>
+    </service>
+</topology> 
+```
+
+Create redirecttoken.xml
+```
+cp /etc/knox/conf/topologies/token.xml /etc/knox/conf/topologies/redirecttoken.xml
+```
+
+Create ui.xml
+```
+vi /etc/knox/conf/topologies/ui.xml
+
+<topology>
+    <gateway>
+        <provider>
+            <role>authentication</role>
+            <name>Anonymous</name>
+            <enabled>true</enabled>
+        </provider>
+        <provider>
+            <role>identity-assertion</role>
+            <name>Default</name>
+            <enabled>false</enabled>
+        </provider>
+    </gateway>
+    <service>
+        <role>AMBARI</role>
+        <url>http://bcx-1.gce.cloudera.com:8080</url>
+    </service>
+    <service>
+        <role>AMBARIUI</role>
+        <url>http://bcx-1.gce.cloudera.com:8080</url>
+    </service>
+</topology>
+```
+
+# Install SMM
+
+## Install SMM App on DP host
+Reference
+- https://docs.hortonworks.com/HDPDocuments/SMM/SMM-1.2.1/installation/content/install_the_service.html
+
+1. Configure local repo
+2. Install SMM App
+3. Install SMM REST admin server
+
+Install SMM App on the DP host
+```
+yum install smm-app
+```
+
+Initialize SMM App
+```
+cd /usr/smm-app/current/streams-messaging-manager/bin
+./smmdeploy.sh init
+./smmdeploy.sh ps
+```
+
+## Install SMM Rest Admin Server
+Reference
+- https://docs.hortonworks.com/HDPDocuments/SMM/SMM-1.2.1/installation/content/smm-install-rest-server.html
+
+1. Configure SMM Database
+2. Install SMM Management Pack
+3. Update SMM Base URL
+4. Add SMM REST Server as a service
+5. Configure Knox for SMM Integration
+
+Reference
+- https://docs.hortonworks.com/HDPDocuments/SMM/SMM-1.2.1/installation/content/smm-configure-database.html
+
+Setup SMM DB
+```
+mysql -u root
+
+create database streamsmsgmgr;
+CREATE USER 'streamsmsgmgr'@'localhost' IDENTIFIED BY 'cloudera123';
+GRANT ALL PRIVILEGES ON streamsmsgmgr.* TO 'streamsmsgmgr'@'localhost' WITH GRANT OPTION;
+CREATE USER 'streamsmsgmgr'@'%' IDENTIFIED BY 'cloudera123';
+GRANT ALL PRIVILEGES ON streamsmsgmgr.* TO 'streamsmsgmgr'@'%' WITH GRANT OPTION;
+```
+
+Backup ambari resource folder
+```
+cp -r /var/lib/ambari-server/resources /var/lib/ambari-server/resources.backup
+```
+
+Install mpack and restart ambari afterwards
+```
+ambari-server install-mpack --mpack=smm-ambari-mpack-1.2.1.0-10.tar.gz --verbose
+ambari-server restart
+```
+
+
+
+
+
+
 
 
 
