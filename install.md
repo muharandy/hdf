@@ -524,33 +524,7 @@ vi /etc/knox/conf/topologies/token.xml
          <param>
             <name>sso.token.verification.pem</name>
             <value>
-                MIIE/jCCAuagAwIBAgIJALyFZxWX+DJVMA0GCSqGSIb3DQEBCwUAMBQxEjAQBgNV
-BAMMCWRhdGFwbGFuZTAeFw0xOTA2MDgwOTAzNTZaFw0yMDA2MDcwOTAzNTZaMBQx
-EjAQBgNVBAMMCWRhdGFwbGFuZTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoC
-ggIBAMNm/eJbMlyOBT68iQsa3XWaqqscNORABPJDq8/d3vbUwawmtFNIRbCT9zuy
-8mkwo/UAqaULVomuuG+Bx5dgATX049VenZ5CWtpljRyFSpG4WLa+ZuhW8hcaq1Ji
-qfhFNpYGd+RQWSHN/MyLh8VtRiw3qJsE4NaWkec9tv+dNbnY5zhCtsMPorw465T1
-prS0mKipjL7boe+t9QGgykuLCMjPLH7KxYydWjokNBG63TEyO5L/xnZ+M2PiAzRB
-+lP0gQijmiu7+apldgCsvHxuBMkLJagagGY/QY/mj7Votd6QnRmq9zfeP+PZyz+8
-LyDXUEFBGbKEpvBJK9fmiimOUeDuAXacmqJmP10+SAoSNfeaOcBxtFa4e6QMKFu5
-yleO12jXmmsAc0e/HOsEkkyGXDeK5hMZzqXxwyfKE9rPE0twQ+ICqhFbUj2m8Tww
-BukgFUzCF/oBLPxVxLYPOOd+3+QBaCpoOwfuEDTJszLzWiRvWSYDtjqfXTUEfTVR
-xs15WBNpp+iuPRiCZRWhTwXXG7yY7ghsJ3ohZCzR8mRshvTzFkNKkEK2pVQ/D2+U
-h9iADR26Jq/x88YD5uZNh0JMrvw7aBSogmOi3KxPsvG4a/b5p8iByDnYSq2/YXc+
-8TFXSxURmAyewZoXXr0W3CG5XRU2Lat2rJjWgHeFzAnSBbPdAgMBAAGjUzBRMB0G
-A1UdDgQWBBSTgCVGHXnI212RjRFA/Pc46MizNjAfBgNVHSMEGDAWgBSTgCVGHXnI
-212RjRFA/Pc46MizNjAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IC
-AQBUHVi+OJ8wG63Q3si1E3eOOgflB8vByAWapz2gkraij17NUmp4+I2VKAUU5j+D
-6b/luxqFTheLe86o4F/xgld7OpFe8Bd8sMImudx0cgraCDn12eVegq1OcgcIsq/G
-dmd2odSFWTMgUfQ83L8ydERh3rPVH2sifP52KfF5HVN0158bEm+62WuM+SkzMnV8
-33gMlnKUAjmXIl+snPhegLDovsOSactdEvovIT8zHToX2W766OM8t+JDLqIsakmR
-lD2iv+CdnHldTfFkORndclv47EfNr8eyrr+UOiR2h5NPprLB1lO3E2L5BZxakg7X
-MNdlTIWzqJJZQNn1+GN6jQb/DQ4uXACiG+lC87asEU0r0Mdsc78xSB7Ac17axOBY
-8jOoAs59qLXz/rRVBKfp/PIXqQtFV75MBSbBrcBMh5S7oc6dvzSnuOU4FOWa1Kok
-zemWynDfigz3K9hSe8iQirMA9VluEKl5FH+LQ22p04V2joQ8t2SN+TA8lJ5ckQEA
-9ZUIEqYGUkfW/cHX7Fi4cabPknAhFwgfN+gxAIX/AZNxREbddrrw1oNguJhUpEFW
-b/JrhYGdu13TGBL1dQarQKBSFCRERMpDbqpAWHqNT4X9ZHIbupMxviztTGDIyFTv
-cPgmUODdZ1pLCFW9fX8aLP9yDSQOSsOfxi2ytp+5v/KVVA==
+				PASTE SSL-CERT.PEM HERE
             </value>
          </param>
       </provider>
@@ -706,6 +680,23 @@ ambari-server install-mpack --mpack=smm-ambari-mpack-1.2.1.0-10.tar.gz --verbose
 ambari-server restart
 ```
 
+1. Logon to Ambari
+2. Add SMM service
+
+## Configure Knox for SMM integration
+
+1. Update authentication.provider.url at Advanced SMM SSO Config
+2. Generate public.key.pem
+
+```
+/usr/jdk64/jdk1.8.0_112/bin/keytool \
+-export \
+-alias gateway-identity \
+-rfc \
+-file /root/knox-sso-cert.pem -keystore /usr/hdf/current/knox-server/data/security/keystores/gateway.jks
+```
+
+Paste the key to public.key.pem at Advanced SMM SSO Config
 
 
 
