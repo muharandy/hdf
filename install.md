@@ -698,6 +698,19 @@ ambari-server restart
 
 Paste the key to public.key.pem at Advanced SMM SSO Config
 
+## Assign Users the kafka DevOps Role
+Reference
+- https://docs.hortonworks.com/HDPDocuments/SMM/SMM-1.2.1/installation/content/smm-users-roles.html
+
+## Enable SMM service in target cluster
+Reference
+- https://docs.hortonworks.com/HDPDocuments/SMM/SMM-1.2.1/installation/content/smm-enable-service-in-dp.html
+
+To fix an internal server error when opening up SMM, run the following on the DP host
+```
+./dpdeploy.sh utils add-host 172.31.113.25 bcx-3.gce.cloudera.com
+```
+
 
 
 
