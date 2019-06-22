@@ -103,6 +103,57 @@ GRANT ALL PRIVILEGES ON registry.* TO 'registry'@'%' WITH GRANT OPTION ;
 GRANT ALL PRIVILEGES ON streamline.* TO 'streamline'@'%' WITH GRANT OPTION ;
 ```
 
+## Install Ambari from Local Repo
+Reference
+- https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/setting_up_a_local_repository_with_no_internet_access.html
+
+Install lighttpd
+```
+yum -y install lighttpd
+systemctl enable lighttpd
+systemctl start lighttpd
+```
+
+Edit lighttpd.conf
+```
+vi /etc/lighttpd/lighttpd.conf
+```
+
+Disable IPV6
+```
+server.use-ipv6 = "disable"
+```
+
+Enable directory listing
+```
+vi /etc/lighttpd/conf.d/dirlisting.conf
+```
+
+Restart lighttpd
+```
+systemctl restart lighttpd
+```
+
+Install JDK
+```
+rpm -i jdk-8u211-linux-x64.rpm
+```
+
+Copy JCE
+```
+cp *.jar /usr/java/latest/jre/lib/security
+```
+
+Copy and extract the ambari tarball under /var/www/lighttpd/
+
+## Create local repo
+
+1. Copy the extracted tarball under the document root of lighttpd
+2. run createrepo command at the base directory
+```
+createrepo .
+```
+
 ## Install Ambari from Public Repo
 
 Download repo
@@ -710,6 +761,7 @@ To fix an internal server error when opening up SMM, run the following on the DP
 ```
 ./dpdeploy.sh utils add-host 172.31.113.25 bcx-3.gce.cloudera.com
 ```
+
 
 
 
