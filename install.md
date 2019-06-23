@@ -103,7 +103,7 @@ GRANT ALL PRIVILEGES ON registry.* TO 'registry'@'%' WITH GRANT OPTION ;
 GRANT ALL PRIVILEGES ON streamline.* TO 'streamline'@'%' WITH GRANT OPTION ;
 ```
 
-## Install Ambari from Local Repo
+## Prepare Local Repo using Lighttpd
 Reference
 - https://docs.hortonworks.com/HDPDocuments/Ambari-2.7.3.0/bk_ambari-installation/content/setting_up_a_local_repository_with_no_internet_access.html
 
@@ -134,6 +134,35 @@ Restart lighttpd
 systemctl restart lighttpd
 ```
 
+Copy and extract the ambari tarball under /var/www/lighttpd/
+
+## Create local repo
+
+1. Copy the extracted tarball under the document root of lighttpd
+2. run createrepo command at the base directory
+```
+createrepo .
+```
+
+## Download remaining RPMs for local install
+
+Create local directory
+```
+mkdir container-selinux  device-mapper-persistent-data  docker-ce  lvm2  mariadb-server  slapd
+```
+
+Using yum to download only
+```
+yum install --downloadonly --downloaddir=mariadb-server mariadb-server
+yum install --downloadonly --downloaddir=slapd openldap openldap-clients openldap-servers
+yum install --downloadonly --downloaddir=device-mapper-persistent-data device-mapper-persistent-data
+yum install --downloadonly --downloaddir=lvm2 lvm2
+yum install --downloadonly --downloaddir=container-selinux http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.95-2.el7_6.noarch.rpm
+yum install --downloadonly --downloaddir=docker-ce docker-ce
+```
+
+## Install from local repo
+
 Install JDK
 ```
 rpm -i jdk-8u211-linux-x64.rpm
@@ -144,14 +173,11 @@ Copy JCE
 cp *.jar /usr/java/latest/jre/lib/security
 ```
 
-Copy and extract the ambari tarball under /var/www/lighttpd/
+## Install remaining RPM 
 
-## Create local repo
-
-1. Copy the extracted tarball under the document root of lighttpd
-2. run createrepo command at the base directory
+Install later using yum localinstall
 ```
-createrepo .
+yum --disablerepo=* localinstall *.rpm
 ```
 
 ## Install Ambari from Public Repo
