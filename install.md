@@ -788,6 +788,16 @@ To fix an internal server error when opening up SMM, run the following on the DP
 ./dpdeploy.sh utils add-host 172.31.113.25 bcx-3.gce.cloudera.com
 ```
 
+### SRM Notes
+1. /etc/streams-replication-manager/srm.properties is not created by default
+2. mm2-offsets.xxx.internal is created using replication factor = 3 by default even though default.replication.factor is set to 1 for that cluster. Might cause issue in a single node cluster
+- org.apache.kafka.connect.errors.ConnectException: Error while attempting to create/find topic(s) 'mm2-offsets.vpc.internal'
+Caused by: java.util.concurrent.ExecutionException: org.apache.kafka.common.errors.InvalidReplicationFactorException: Replication factor: 3 larger than available brokers: 1.
+Caused by: org.apache.kafka.common.errors.InvalidReplicationFactorException: Replication factor: 3 larger than available brokers: 1.
+3. For SRM control to work, Requires kafka producer library to be installed on the SRM node (not mentioned in the documentation)
+org.apache.kafka.common.KafkaException: Failed to construct kafka producer
+	at org.apache.kafka.clients.producer.KafkaProducer.<init>(KafkaProducer.java:430)
+	at org.apache.kafka.clients.producer.KafkaProducer.<init>(KafkaProducer.java:287)
 
 
 
